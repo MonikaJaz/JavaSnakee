@@ -5,8 +5,8 @@ import java.util.Random;
 
 public class GamePanel extends JPanel implements ActionListener{
 
-    static final int SCREEN_WIDTH = 1300;
-    static final int SCREEN_HEIGHT = 750;
+    static final int SCREEN_WIDTH = 500;
+    static final int SCREEN_HEIGHT = 500;
     static final int UNIT_SIZE = 50;
     static final int GAME_UNITS = (SCREEN_WIDTH*SCREEN_HEIGHT)/(UNIT_SIZE*UNIT_SIZE);
     static final int DELAY = 175;
@@ -42,12 +42,14 @@ public class GamePanel extends JPanel implements ActionListener{
     public void draw(Graphics g) {
 
         if(running) {
-			/*
+    /*
 			for(int i=0;i<SCREEN_HEIGHT/UNIT_SIZE;i++) {
 				g.drawLine(i*UNIT_SIZE, 0, i*UNIT_SIZE, SCREEN_HEIGHT);
 				g.drawLine(0, i*UNIT_SIZE, SCREEN_WIDTH, i*UNIT_SIZE);
 			}
-			*/
+
+    */
+
             g.setColor(Color.red);
             g.fillOval(appleX, appleY, UNIT_SIZE, UNIT_SIZE);
 
@@ -58,13 +60,18 @@ public class GamePanel extends JPanel implements ActionListener{
                 }
                 else {
                     g.setColor(new Color(45,180,0));
-                    //g.setColor(new Color(random.nextInt(255),random.nextInt(255),random.nextInt(255)));
+                    g.setColor(new Color(random.nextInt(255),random.nextInt(255),random.nextInt(255)));
                     g.fillRect(x[i], y[i], UNIT_SIZE, UNIT_SIZE);
                 }
             }
+            g.setColor(Color.RED);
+            g.setFont(new Font("Ink Free", Font.BOLD, 40));
+            FontMetrics metrics1 = getFontMetrics(g.getFont());
+            g.drawString("Score: "+ applesEaten, (SCREEN_WIDTH - metrics1.stringWidth("Score: "+ applesEaten))/2, g.getFont().getSize());// TO SPRAWI ZE NAPIS BEDZIE NA SRODKU EKRANU
+
         }
         else {
-            gameOver(g);
+            gameOver(g); // g oznacza grafike
         }
 
     }
@@ -95,6 +102,11 @@ public class GamePanel extends JPanel implements ActionListener{
 
     }
     public void checkApple() {
+        if((x[0] == appleX) && (y[0] == appleY)){ // jezeli pozycja jablka beedzie sie zgadzac z pozycją węża
+            bodyParts++;
+            applesEaten++;
+            newApple(); // i spawnuje sie nowe jablko
+        }
 
     }
     public void checkCollisions() {
@@ -126,6 +138,20 @@ public class GamePanel extends JPanel implements ActionListener{
         }
     }
     public void gameOver(Graphics g) {
+        //score
+        g.setColor(Color.RED);
+        g.setFont(new Font("Ink Free", Font.BOLD, 40));
+        FontMetrics metrics = getFontMetrics(g.getFont());
+        g.drawString("Score: "+ applesEaten, (SCREEN_WIDTH - metrics.stringWidth("Score: "+ applesEaten))/2, g.getFont().getSize());// TO SPRAWI ZE NAPIS BEDZIE NA SRODKU EKRANU
+
+
+
+        // the game ocer text
+        g.setColor(Color.RED);
+        g.setFont(new Font("Ink Free", Font.BOLD, 75));
+        FontMetrics metrics2 = getFontMetrics(g.getFont());
+        g.drawString("Game Over", (SCREEN_WIDTH - metrics2.stringWidth("Game Over"))/2, SCREEN_HEIGHT/2);// TO SPRAWI ZE NAPIS BEDZIE NA SRODKU EKRANU
+
     }
     @Override
     public void actionPerformed(ActionEvent e) {
