@@ -8,14 +8,14 @@ public class GamePanel extends JPanel implements ActionListener{
     static final int SCREEN_WIDTH = 500;
     static final int SCREEN_HEIGHT = 500;
     static final int UNIT_SIZE = 50;
-    static final int GAME_UNITS = (SCREEN_WIDTH*SCREEN_HEIGHT)/(UNIT_SIZE*UNIT_SIZE);
+    static final int GAME_UNITS = (SCREEN_WIDTH*SCREEN_HEIGHT)/(UNIT_SIZE*UNIT_SIZE); // liczba kwadracikow w grze
     static final int DELAY = 175;
-    final int x[] = new int[GAME_UNITS];
+    final int x[] = new int[GAME_UNITS]; // miejsca gdzie znajduje sie waż
     final int y[] = new int[GAME_UNITS];
-    int bodyParts = 6;
+    int bodyParts = 6; // dlugosc weza, na poczatek ustawiona na 6
     int applesEaten;
-    int appleX;
-    int appleY;
+    int appleX; // polozenie x jabłka
+    int appleY; // polozenie y jabłka
     char direction = 'R';
     boolean running = false;
     Timer timer;
@@ -26,7 +26,7 @@ public class GamePanel extends JPanel implements ActionListener{
         this.setPreferredSize(new Dimension(SCREEN_WIDTH,SCREEN_HEIGHT));
         this.setBackground(Color.black);
         this.setFocusable(true);
-        this.addKeyListener(new MyKeyAdapter());
+        this.addKeyListener(new MyKeyAdapter()); // musimy dodac key listener ktory sie odwola to key adaptera
         startGame();
     }
     public void startGame() {
@@ -56,38 +56,39 @@ public class GamePanel extends JPanel implements ActionListener{
             for(int i = 0; i< bodyParts;i++) {
                 if(i == 0) {
                     g.setColor(Color.green);
-                    g.fillRect(x[i], y[i], UNIT_SIZE, UNIT_SIZE);
+                    g.fillRect(x[i], y[i], UNIT_SIZE, UNIT_SIZE); // tu inicjujemy to ze jakby głowa węża będzie zawsze w takim koloze zielonym
                 }
                 else {
                     g.setColor(new Color(45,180,0));
-                    g.setColor(new Color(random.nextInt(255),random.nextInt(255),random.nextInt(255)));
+                //    g.setColor(new Color(random.nextInt(255),random.nextInt(255),random.nextInt(255)));
                     g.fillRect(x[i], y[i], UNIT_SIZE, UNIT_SIZE);
                 }
             }
             g.setColor(Color.RED);
             g.setFont(new Font("Ink Free", Font.BOLD, 40));
-            FontMetrics metrics1 = getFontMetrics(g.getFont());
+            FontMetrics metrics1 = getFontMetrics(g.getFont()); // to pozwoli nam na manipilowanie miejscem w ktorym sie znajduje czcionka
             g.drawString("Score: "+ applesEaten, (SCREEN_WIDTH - metrics1.stringWidth("Score: "+ applesEaten))/2, g.getFont().getSize());// TO SPRAWI ZE NAPIS BEDZIE NA SRODKU EKRANU
 
         }
         else {
-            gameOver(g); // g oznacza grafike
+            gameOver(g);
         }
 
     }
     public void newApple(){
-        appleX = random.nextInt((int)(SCREEN_WIDTH/UNIT_SIZE))*UNIT_SIZE;
+        appleX = random.nextInt((int)(SCREEN_WIDTH/UNIT_SIZE))*UNIT_SIZE; // to pozwoli nam na umieszczenie jablka w konkretej pozycji
         appleY = random.nextInt((int)(SCREEN_HEIGHT/UNIT_SIZE))*UNIT_SIZE;
     }
     public void move(){
         for(int i = bodyParts;i>0;i--) {
+            // ten element kodu powoduje to ze dalsze czesci węza będą podążać za jego głową
             x[i] = x[i-1];
             y[i] = y[i-1];
         }
-
+        // w tym fragmencie kodu aktualizujemy pozycję węża na podstawie tego w jakim kierunku się porusza
         switch(direction) {
             case 'U':
-                y[0] = y[0] - UNIT_SIZE;
+                y[0] = y[0] - UNIT_SIZE; // np jezeli bedzie sie poruszal w gore to zmniejszamy jego pozycje wertykalna o jeden unit
                 break;
             case 'D':
                 y[0] = y[0] + UNIT_SIZE;
@@ -112,7 +113,7 @@ public class GamePanel extends JPanel implements ActionListener{
     public void checkCollisions() {
         //checks if head collides with body
         for(int i = bodyParts;i>0;i--) {
-            if((x[0] == x[i])&& (y[0] == y[i])) {
+            if((x[0] == x[i])&& (y[0] == y[i])) { //jezeli miejsce głowy węża będzie się zgadzało z
                 running = false;
             }
         }
@@ -155,19 +156,20 @@ public class GamePanel extends JPanel implements ActionListener{
     }
     @Override
     public void actionPerformed(ActionEvent e) {
-
+        // jezeli aplikacja jest uruchomiona to te 3 metody rowniez
         if(running) {
             move();
             checkApple();
             checkCollisions();
         }
-        repaint();
+        repaint(); // ta metoda pozwala na odswiezenie metody paintComponent
     }
 
     public class MyKeyAdapter extends KeyAdapter{
         @Override
         public void keyPressed(KeyEvent e) {
-            // control the snake
+            // w tym fragmencie kodu kontrulujemy snakea
+            // w pętlach if upewniami się jedynie zeby snake nie robil czegos takiego jak zawracanie!
             switch(e.getKeyCode()){
                 case KeyEvent.VK_LEFT:
                     if (direction != 'R') {
@@ -190,7 +192,6 @@ public class GamePanel extends JPanel implements ActionListener{
                     }
                     break;
             }
-
             }
         }
     }
