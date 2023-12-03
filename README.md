@@ -1,2 +1,2 @@
 # JavaSnakee
-java snake brocode on yt
+a simple java project- snake game!
